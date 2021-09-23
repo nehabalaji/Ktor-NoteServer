@@ -2,6 +2,7 @@ package com.notesapp
 
 import com.notesapp.data.collections.User
 import com.notesapp.data.registerUser
+import com.notesapp.routes.registerRoute
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -19,19 +20,13 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     install(DefaultHeaders) //(optional) causes ktor to append all the extra info to all responses that come from our server
     install(CallLogging) //(optional) logs all of the http requests that comes to the server and the responses
-    install(Routing) //makes sure we can define url endpoints where clients can connect to
+    install(Routing) {
+        registerRoute()
+    } //makes sure we can define url endpoints where clients can connect to
     install(ContentNegotiation){
         gson {
             setPrettyPrinting()
         }
     } //interprets content that is sent to/from the server (here json)
-    CoroutineScope(Dispatchers.IO).launch {
-        registerUser(
-            User(
-                "abc@abc.com",
-                "123456"
-            )
-        )
-    }
 }
 
