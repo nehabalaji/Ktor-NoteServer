@@ -2,6 +2,7 @@ package com.notesapp
 
 import com.notesapp.data.collections.User
 import com.notesapp.data.registerUser
+import com.notesapp.routes.loginRoute
 import com.notesapp.routes.registerRoute
 import io.ktor.application.*
 import io.ktor.features.*
@@ -19,9 +20,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(DefaultHeaders) //(optional) causes ktor to append all the extra info to all responses that come from our server
-    install(CallLogging) //(optional) logs all of the http requests that comes to the server and the responses
+    install(CallLogging) //(optional) logs all the http requests that comes to the server and the responses
     install(Routing) {
         registerRoute()
+        loginRoute()
     } //makes sure we can define url endpoints where clients can connect to
     install(ContentNegotiation){
         gson {
