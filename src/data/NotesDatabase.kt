@@ -28,3 +28,12 @@ suspend fun checkPasswordForEmail(email: String, passwordToBeChecked: String): B
 suspend fun getNotesForUser(email: String) : List<Note> {
     return notes.find(Note::owners contains email).toList()
 }
+
+suspend fun saveNote(note: Note): Boolean {
+    val notesExist = notes.findOneById(note.id) != null //Check if note already exists
+    return if (notesExist) {
+        notes.updateOneById(note.id, note).wasAcknowledged()
+    } else {
+        notes.insertOne(note).wasAcknowledged()
+    }  //if note exists the update the note else insert the note
+}
