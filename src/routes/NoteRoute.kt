@@ -1,7 +1,9 @@
 package com.notesapp.routes
 
 import com.notesapp.data.collections.Note
+import com.notesapp.data.deleteNoteForUser
 import com.notesapp.data.getNotesForUser
+import com.notesapp.data.requests.DeleteNoteRequest
 import com.notesapp.data.saveNote
 import io.ktor.application.call
 import io.ktor.auth.UserIdPrincipal
@@ -44,6 +46,24 @@ fun Route.noteRoutes() {
                     call.respond(OK)
                 } else {
                     call.respond(Conflict)
+                }
+            }
+        }
+    }
+    route("/deleteNote") {
+        authenticate {
+            post {
+                val email = call.principal<UserIdPrincipal>()!!.name
+                val request = try {
+                    call.receive<DeleteNoteRequest>()
+                } catch (e: ContentTransformationException) {
+                    call.respond(BadRequest)
+                    return@post
+                }
+                if (deleteNoteForUser(email, request.id)) {
+                    call.respond(OK)
+                } else {
+                    call.respond(Conflict )
                 }
             }
         }
