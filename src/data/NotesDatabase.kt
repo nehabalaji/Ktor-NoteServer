@@ -2,6 +2,7 @@ package com.notesapp.data
 
 import com.notesapp.data.collections.Note
 import com.notesapp.data.collections.User
+import com.notesapp.security.checkHashForPassword
 import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
@@ -24,7 +25,7 @@ suspend fun checkIfUserExists(email: String): Boolean {
 
 suspend fun checkPasswordForEmail(email: String, passwordToBeChecked: String): Boolean {
     val actualPassword = users.findOne(User::email eq email)?.password ?: return false
-    return actualPassword == passwordToBeChecked
+    return checkHashForPassword(passwordToBeChecked, actualPassword)
 }
 
 suspend fun getNotesForUser(email: String) : List<Note> {
